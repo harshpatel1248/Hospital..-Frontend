@@ -9,6 +9,7 @@ import serviceReducer from "./slices/serviceSlice";
 import floorReducer from "./slices/floorSlice";
 import wardReducer from "./slices/wardSlice";
 import roomReducer from "./slices/roomSlice";
+import  bedReducer from "./slices/badSlice";
 
 const rootReducer = {
     auth: authReducer,
@@ -20,6 +21,7 @@ const rootReducer = {
     floor: floorReducer,
     ward: wardReducer,
     room: roomReducer,
+     bed: bedReducer
 };
 
 const store = configureStore({
