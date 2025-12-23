@@ -38,9 +38,6 @@ export default function AddEditDoctor() {
     const [degrees, setDegrees] = useState([]);
     const [degreeLoading, setDegreeLoading] = useState(false);
 
-
-
-
     // <-- NEW LOADER
 
     const buildImageUrl = (img) => {
@@ -224,12 +221,12 @@ export default function AddEditDoctor() {
                 <Spin fullscreen size="large" tip="Loading..." />
             )}
             <Breadcrumbs
-                title={isEdit ? "Edit Doctor" : "Add New Doctor"}
+                title={isEdit ? "Edit Floor" : "Add New Floor"}
                 showBack={true}
-                backTo="/doctor-onbording"
+                backTo="/floor-master"
                 items={[
-                    { label: "Doctors", href: "/doctor-onbording" },
-                    { label: isEdit ? "Edit Doctor" : "Add New Doctor" }
+                    { label: "Floors", href: "/floor-master" },
+                    { label: isEdit ? "Edit Floor" : "Add New Floor" }
                 ]}
             />
 

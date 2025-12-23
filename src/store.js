@@ -6,6 +6,9 @@ import recipientReducer from "./slices/recipientSlice";
 import patientReducer from "./slices/patientSlice";
 import appointmentReducer from "./slices/appointmentSlice";
 import serviceReducer from "./slices/serviceSlice";
+import floorReducer from "./slices/floorSlice";
+import wardReducer from "./slices/wardSlice";
+import roomReducer from "./slices/roomSlice";
 
 const rootReducer = {
     auth: authReducer,
@@ -13,7 +16,10 @@ const rootReducer = {
     recipient: recipientReducer,
     patient: patientReducer,
     appointment: appointmentReducer,
-    service: serviceReducer,  
+    service: serviceReducer,
+    floor: floorReducer,
+    ward: wardReducer,
+    room: roomReducer,
 };
 
 const store = configureStore({

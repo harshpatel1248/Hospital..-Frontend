@@ -1,9 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import doctorService from "../services/doctorService";
 
-/* =======================================================
-   📌 GET ALL DOCTORS (Pagination + Ordering + Search)
-======================================================= */
 export const fetchDoctors = createAsyncThunk(
   "doctor/fetchDoctors",
   async ({ page = 1, limit = 10, orderBy = "createdAt", order = "DESC", search = "" }, { rejectWithValue }) => {
@@ -16,9 +13,6 @@ export const fetchDoctors = createAsyncThunk(
   }
 );
 
-/* =======================================================
-   📌 GET A SINGLE DOCTOR
-======================================================= */
 export const fetchDoctorById = createAsyncThunk(
   "doctor/fetchDoctorById",
   async (id, { rejectWithValue }) => {
@@ -31,9 +25,6 @@ export const fetchDoctorById = createAsyncThunk(
   }
 );
 
-/* =======================================================
-   🔒 ADMIN — CREATE DOCTOR
-======================================================= */
 export const createDoctor = createAsyncThunk(
   "doctor/createDoctor",
   async (payload, { rejectWithValue }) => {
@@ -46,9 +37,6 @@ export const createDoctor = createAsyncThunk(
   }
 );
 
-/* =======================================================
-   🔒 ADMIN — UPDATE DOCTOR
-======================================================= */
 export const updateDoctor = createAsyncThunk(
   "doctor/updateDoctor",
   async ({ id, data }, { rejectWithValue }) => {
@@ -62,9 +50,6 @@ export const updateDoctor = createAsyncThunk(
   }
 );
 
-/* =======================================================
-   🔒 ADMIN — DELETE DOCTOR
-======================================================= */
 export const deleteDoctor = createAsyncThunk(
   "doctor/deleteDoctor",
   async (id, { rejectWithValue }) => {
@@ -77,9 +62,6 @@ export const deleteDoctor = createAsyncThunk(
   }
 );
 
-/* =======================================================
-   🔥 INITIAL STATE (Pagination + Sorting + CRUD Status)
-======================================================= */
 const initialState = {
   doctors: [],
   doctor: null,
@@ -97,9 +79,6 @@ const initialState = {
   success: false,
 };
 
-/* =======================================================
-   REDUX SLICE
-======================================================= */
 const doctorSlice = createSlice({
   name: "doctor",
   initialState,
@@ -112,7 +91,6 @@ const doctorSlice = createSlice({
   extraReducers: (builder) => {
     builder
 
-      /* ================= FETCH ALL DOCTORS ================= */
       .addCase(fetchDoctors.pending, (state) => { state.loading = true; })
       .addCase(fetchDoctors.fulfilled, (state, action) => {
         state.loading = false;
@@ -127,7 +105,6 @@ const doctorSlice = createSlice({
         state.error = action.payload;
       })
 
-      /* ================= FETCH DOCTOR BY ID ================= */
       .addCase(fetchDoctorById.pending, (state) => { state.loading = true; })
       .addCase(fetchDoctorById.fulfilled, (state, action) => {
         state.loading = false;
@@ -138,7 +115,6 @@ const doctorSlice = createSlice({
         state.error = action.payload;
       })
 
-      /* ================= CREATE DOCTOR ================= */
       .addCase(createDoctor.fulfilled, (state, action) => {
         state.success = true;
         state.doctors.unshift(action.payload.data || action.payload);
@@ -147,7 +123,6 @@ const doctorSlice = createSlice({
         state.error = action.payload;
       })
 
-      /* ================= UPDATE DOCTOR ================= */
       .addCase(updateDoctor.fulfilled, (state, action) => {
         state.success = true;
         const index = state.doctors.findIndex(d => d._id === action.payload._id);
@@ -157,7 +132,6 @@ const doctorSlice = createSlice({
         state.error = action.payload;
       })
 
-      /* ================= DELETE DOCTOR ================= */
       .addCase(deleteDoctor.fulfilled, (state, action) => {
         state.success = true;
         state.doctors = state.doctors.filter(item => item._id !== action.meta.arg);

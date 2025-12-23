@@ -23,6 +23,18 @@ export default function SidebarMenu({ collapsed }) {
         { key: "/dashboard", icon: <DashboardOutlined />, label: "Dashboard" },
 
         {
+            key: "master",
+            icon: <UserOutlined />,
+            label: "Master",
+            children: [
+                { label: "Floor" , key: "/floor-master" },
+                { label: "Ward" , key: "/ward-master" },
+                { label: "room" , key: "/room-master" },
+                { label: "bad" , key: "/bed-master" },
+                { label: "Department" , key: "/department-master" },
+            ]
+        },
+        {
             key: "doctor",
             icon: <UserOutlined />,
             label: "Doctor",
@@ -80,10 +92,10 @@ export default function SidebarMenu({ collapsed }) {
             selectedKeys={[location.pathname]}
             defaultOpenKeys={[
                 location.pathname.startsWith("/doctor") ? "doctor" :
-                location.pathname.startsWith("/recipient") ? "recipient" :
-                location.pathname.startsWith("/patitent") ? "patitent" :
-                location.pathname.startsWith("/appointments") ? "appointments" :
-                location.pathname.startsWith("/services") ? "services" : ""
+                    location.pathname.startsWith("/recipient") ? "recipient" :
+                        location.pathname.startsWith("/patitent") ? "patitent" :
+                            location.pathname.startsWith("/appointments") ? "appointments" :
+                                location.pathname.startsWith("/services") ? "services" : ""
             ]}
             items={menuItems}
             onClick={handleMenuClick}

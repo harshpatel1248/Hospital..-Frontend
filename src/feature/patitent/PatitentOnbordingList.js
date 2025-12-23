@@ -94,7 +94,6 @@ const PatientOnboardingList = () => {
             .catch(() => message.error("Delete failed"));
     };
 
-    /* ===================== COLUMNS ===================== */
 
     const allColumns = [
         {

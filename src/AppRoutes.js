@@ -30,6 +30,13 @@ import PrivateRoute from "./feature/comman/PrivateRoute";
 import ResetPassword from "./feature/auth/ResetPassword";
 import ForgotPassword from "./feature/auth/ForgotPassword";
 
+import RoomMaster from "./feature/master/RoomMaster";
+import FloorMaster from "./feature/master/FloorList";
+import DepartmentMaster from "./feature/master/DepartmentMaster";
+import BedMaster from "./feature/master/BedMaster";
+import AddEdtiFloor from "./feature/master/AddEdtiFloor";
+import WardMaster from "./feature/master/WardMaster";
+
 export function AppRoutes() {
     return (
         <Routes>
@@ -65,6 +72,16 @@ export function AppRoutes() {
                     <Route path="/services" element={<ServiceList />} />
                     <Route path="/add-service" element={<AddEditService />} />
                     <Route path="/edit-service/:id" element={<AddEditService />} />
+
+                    {/* Master routes */}
+                    <Route path="/room-master" element={<RoomMaster />} />
+                    <Route path="/floor-master" element={<FloorMaster />} />
+                    <Route path="/department-master" element={<DepartmentMaster />} />
+                    <Route path="/bed-master" element={<BedMaster />} />
+                    <Route path="/ward-master" element={<WardMaster />} />
+
+                    <Route path="/add-edit-floor" element={<AddEdtiFloor />} />
+                    <Route path="/add-edit-floor/:id" element={<AddEdtiFloor />} />
 
                 </Route>
             </Route>

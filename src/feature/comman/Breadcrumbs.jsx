@@ -1,63 +1,92 @@
 import React from "react";
-import { Breadcrumb } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 
 export default function Breadcrumbs({
-    title,
-    items = [],
-    showBack = true,
-    backTo = null
+  title,
+  items = [],
+  showBack = true,
+  backTo = null,
 }) {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const handleBack = () => {
-        if (backTo) navigate(backTo);
-        else navigate(-1);
-    };
+  const handleBack = () => {
+    if (backTo) navigate(backTo);
+    else navigate(-1);
+  };
 
-    return (
-        <div style={{ padding: "8px", marginBottom: 8, borderBottom: "1px solid #e0e0e0", width: "100%" }}>
+  return (
+    <div
+      style={{
+        padding: "12px 0",
+        borderBottom: "1px solid #eee",
+        marginBottom: 16,
+      }}
+    >
+      {/* Page Title */}
+      {title && (
+        <h2
+          style={{
+            margin: 0,
+            fontWeight: 600,
+            fontSize: 22,
+            marginBottom: 10,
+          }}
+        >
+          {title}
+        </h2>
+      )}
 
-            {/* Title Row */}
-            {title && (
-                <h2 style={{ fontWeight: 600, marginBottom: 10 }}>
-                    {title}
-                </h2>
+      {/* Breadcrumb Row */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          fontSize: 14,
+          color: "#666",
+          gap: 6,
+        }}
+      >
+        {showBack && (
+          <>
+            <span
+              onClick={handleBack}
+              style={{
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: 4,
+                color: "#444",
+                fontWeight: 500,
+              }}
+            >
+              <ArrowLeftOutlined />
+              Back
+            </span>
+            <span>/</span>
+          </>
+        )}
+
+        {items.map((item, index) => (
+          <React.Fragment key={index}>
+            {item.href ? (
+              <Link
+                to={item.href}
+                style={{
+                  color: "#1890ff",
+                  textDecoration: "none",
+                }}
+              >
+                {item.label}
+              </Link>
+            ) : (
+              <span style={{ color: "#999" }}>{item.label}</span>
             )}
 
-            {/* Breadcrumb Row */}
-            <div style={{ display: "flex", alignItems: "center" }}>
-                <Breadcrumb separator=" / ">
-                    {showBack && (
-                        <Breadcrumb.Item>
-                            <span
-                                onClick={handleBack}
-                                style={{
-                                    cursor: "pointer",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "5px",
-                                    fontWeight: 500
-                                }}
-                            >
-                                <ArrowLeftOutlined />
-                                Back
-                            </span>
-                        </Breadcrumb.Item>
-                    )}
-
-                    {items.map((item, i) => (
-                        <Breadcrumb.Item key={i}>
-                            {item.href ? (
-                                <Link to={item.href}>{item.label}</Link>
-                            ) : (
-                                item.label
-                            )}
-                        </Breadcrumb.Item>
-                    ))}
-                </Breadcrumb>
-            </div>
-        </div>
-    );
+            {index !== items.length - 1 && <span>/</span>}
+          </React.Fragment>
+        ))}
+      </div>
+    </div>
+  );
 }
