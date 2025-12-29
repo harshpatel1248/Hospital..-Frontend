@@ -60,7 +60,7 @@ const getBeds = (params = {}) => {
 };
 
 const getBedById = (id) => {
-  return axiosClient.get(`api/beds/${id}`).then((res) => res.data);
+  return axiosClient.get(`api/get-bed/${id}`).then((res) => res.data);
 };
 
 const createBed = (payload) => {
@@ -68,14 +68,18 @@ const createBed = (payload) => {
     throw new Error("Admin Only Access ❌");
   }
 
-  return axiosClient.post("api/create-bed", payload).then((res) => res.data);
+  return axiosClient.post("api/create-bed", payload) .then((res) => {
+    console.log("API RES:", res);     
+    console.log("API DATA:", res.data);
+    return res.data;
+  });
 };
 const updateBed = (id, payload) => {
   if (!isAdmin()) {
     return Promise.reject({ message: "Admin Only Access ❌" });
   }
 
-  return axiosClient.patch(`api/beds/${id}`, payload).then((res) => res.data);
+  return axiosClient.patch(`api/update-bed/${id}`, payload).then((res) => res.data);
 };
 
 const deleteBed = (id) => {

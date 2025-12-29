@@ -28,6 +28,7 @@ import {
   createBed,
   updateBed,
   setSort,
+  fetchBedById,
   resetSort,
 } from "../../slices/badSlice.js";
 import { fetchFloors } from "../../slices/floorSlice";
@@ -56,6 +57,7 @@ const BedMaster = () => {
   const { floors, loading: floorLoading } = useSelector((state) => state.floor);
   const { rooms, loading: roomLoading } = useSelector((state) => state.room);
   const { wards, loading: wardLoading } = useSelector((state) => state.ward);
+  const { selectedBed } = useSelector((state) => state.bed);
 
   const [searchText, setSearchText] = useState("");
   useEffect(() => {
@@ -71,16 +73,22 @@ const BedMaster = () => {
   }, [drawerOpen, floors.length, rooms.length, wards.length, dispatch]);
 
   useEffect(() => {
-    if (drawerMode === "edit" && editingRecord) {
+    if (drawerMode === "edit" && selectedBed) {
       form.setFieldsValue({
-        ...editingRecord,
-        bedType: editingRecord.bedType,
-        isActive: editingRecord.isActive,
+        bedNumber: selectedBed.bedNumber,
+        bedType: selectedBed.bedType,
+        floor: selectedBed.floor?._id || selectedBed.floor,
+        room: selectedBed.room?._id || null,
+        ward: selectedBed.ward?._id || null,
+        notes: selectedBed.notes,
+        isOccupied: selectedBed.isOccupied,
+        isActive: selectedBed.isActive,
       });
-    } else {
-      form.resetFields();
+
+      setSelectedRoom(selectedBed.room?._id || null);
+      setSelectedWard(selectedBed.ward?._id || null);
     }
-  }, [drawerMode, editingRecord, form]);
+  }, [selectedBed, drawerMode]);
 
   const debouncedFetch = useMemo(
     () =>
@@ -156,6 +164,16 @@ const BedMaster = () => {
       },
     });
   };
+
+  const handleEdit = (record) => {
+    setDrawerMode("edit");
+    setEditingRecord(record);
+    setDrawerOpen(true);
+    setSelectedRoom(null);
+    setSelectedWard(null);
+    dispatch(fetchBedById(record._id));
+  };
+
   const defaultChecked = [
     "bedNumber",
     "bedType",
@@ -163,6 +181,7 @@ const BedMaster = () => {
     "room",
     "isOccupied",
     "isActive",
+    "ward",
   ];
   const [selectedColumns, setSelectedColumns] = useState(defaultChecked);
 
@@ -189,6 +208,12 @@ const BedMaster = () => {
       title: "Room",
       dataIndex: ["room", "roomNumber"],
       key: "room",
+      render: (v) => v || "—",
+    },
+    {
+      title: "Ward",
+      dataIndex: ["ward", "name"],
+      key: "ward",
       render: (v) => v || "—",
     },
     {
@@ -223,7 +248,19 @@ const BedMaster = () => {
     {
       title: "Created By",
       dataIndex: ["createdBy", "name"],
-      key: "createdBy",
+      render: (v) => v || "—",
+    },
+    {
+      title: "Updated By",
+      dataIndex: ["updatedBy", "name"],
+      key: "updatedBy" || "-",
+      render: (v) => v || "—",
+    },
+    {
+      title: "Updated At",
+      dataIndex: ["updatedAt"],
+      key: "updatedAt",
+      render: (v) => v || "—",
     },
     {
       title: "Actions",
@@ -233,12 +270,7 @@ const BedMaster = () => {
           <Button
             type="text"
             icon={<EditOutlined />}
-            onClick={() => {
-              setDrawerMode("edit");
-              setEditingRecord(record);
-              form.setFieldsValue(record);
-              setDrawerOpen(true);
-            }}
+            onClick={() => handleEdit(record)}
           />
           <Button
             type="text"
@@ -302,57 +334,55 @@ const BedMaster = () => {
   ];
 
   const onFinish = async (values) => {
-    console.log("====================================");
-    console.log("values", values);
-    console.log("====================================");
-    try {
-      // ✅ BUILD PAYLOAD SAFELY
-      const payload = {
-        bedNumber: values.bedNumber,
-        bedType: values.bedType.toUpperCase(),
-        floor: values.floor,
-        notes: values.notes,
-      };
+  try {
+    const payload = {
+      bedNumber: values.bedNumber,
+      bedType: values.bedType.toUpperCase(),
+      floor: values.floor,
+      notes: values.notes,
+      isOccupied: values.isOccupied,
+      isActive: values.isActive,
+    };
 
-      // 🔥 ROOM vs WARD LOGIC
-      if (values.room) {
-        payload.bedLocationType = "ROOM";
-        payload.room = values.room;
-        // ❌ DO NOT SEND ward
-      }
-
-      if (values.ward) {
-        payload.bedLocationType = "WARD";
-        payload.ward = values.ward;
-        // ❌ DO NOT SEND room
-      }
-
-      let res;
-
-      if (drawerMode === "add") {
-        res = await dispatch(createBed(payload)).unwrap();
-      } else {
-        res = await dispatch(
-          updateBed({ id: editingRecord._id, payload })
-        ).unwrap();
-      }
-
-      if (res?.success) {
-        message.success(res.message || "Operation successful");
-        form.resetFields();
-        setDrawerOpen(false);
-        setEditingRecord(null);
-        setDrawerMode("add");
-        dispatch(fetchBeds({ page, limit }));
-      } else {
-        message.error(res?.message || "Operation failed");
-      }
-    } catch (err) {
-      message.error(
-        err?.response?.data?.message || err?.message || "Validation failed"
-      );
+    if (values.room) {
+      payload.bedLocationType = "ROOM";
+      payload.room = values.room;
     }
-  };
+
+    if (values.ward) {
+      payload.bedLocationType = "WARD";
+      payload.ward = values.ward;
+    }
+
+    let res;
+
+    if (drawerMode === "add") {
+      res = await dispatch(createBed(payload)).unwrap();
+      message.success(res?.message || "Bed created successfully");
+    } else {
+      res = await dispatch(
+        updateBed({ id: editingRecord._id, payload })
+      ).unwrap();
+      message.success(res?.message || "Bed updated successfully");
+    }
+
+    form.resetFields();
+    setDrawerOpen(false);
+    setEditingRecord(null);
+    setDrawerMode("add");
+    dispatch(fetchBeds({ page, limit }));
+
+  } catch (err) {
+    console.error("API Error:", err);
+
+    const errorMsg =
+      err?.payload?.message ||
+      err?.message ||
+      "Something went wrong";
+
+    message.error(errorMsg);
+  }
+};
 
   return (
     <>

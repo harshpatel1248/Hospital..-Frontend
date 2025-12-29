@@ -12,13 +12,9 @@ export default function SidebarMenu({ collapsed }) {
 
     const navigate = useNavigate();
     const location = useLocation();
-
-    // 🔥 Menu Click Handler
     const handleMenuClick = ({ key }) => {
         navigate(key);
     };
-
-    // 🔥 Menu Items with Doctors Submenu
     const menuItems = [
         { key: "/dashboard", icon: <DashboardOutlined />, label: "Dashboard" },
 
@@ -31,7 +27,17 @@ export default function SidebarMenu({ collapsed }) {
                 { label: "Ward" , key: "/ward-master" },
                 { label: "room" , key: "/room-master" },
                 { label: "bad" , key: "/bed-master" },
+                { label: "Lab Test" , key: "/lab-test" },
                 { label: "Department" , key: "/department-master" },
+            ]
+        },
+        {
+            key: "chargeMaster",
+            icon: <UserOutlined />,
+            label: "Charge Master",
+            children: [
+                { label: "Charge" , key: "/charge-master" },
+                
             ]
         },
         {

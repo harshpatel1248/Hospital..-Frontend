@@ -41,7 +41,9 @@ export const fetchBedById = createAsyncThunk(
       const res = await bedService.getBedById(id);
       return res;
     } catch (err) {
-      return rejectWithValue(err.message || "Bed not found");
+      return rejectWithValue(
+        err.response?.data?.message || err.message || "Bed not found"
+      );
     }
   }
 );
@@ -60,9 +62,9 @@ export const createBed = createAsyncThunk(
 
 export const updateBed = createAsyncThunk(
   "bed/updateBed",
-  async ({ id, data }, { rejectWithValue }) => {
+  async ({ id, payload }, { rejectWithValue }) => {
     try {
-      const res = await bedService.updateBed(id, data);
+      const res = await bedService.updateBed(id, payload);
       return res;
     } catch (err) {
       return rejectWithValue(
@@ -84,10 +86,10 @@ export const deleteBed = createAsyncThunk(
   }
 );
 
-
 const initialState = {
   beds: [],
   bed: null,
+  selectedBed: null,
 
   total: 0,
   totalPages: 1,
@@ -149,6 +151,7 @@ const bedSlice = createSlice({
       .addCase(fetchBedById.fulfilled, (state, action) => {
         state.loading = false;
         state.bed = action.payload;
+        state.selectedBed = action.payload;
       })
       .addCase(fetchBedById.rejected, (state, action) => {
         state.loading = false;
@@ -167,8 +170,12 @@ const bedSlice = createSlice({
       /* ===== UPDATE BED ===== */
       .addCase(updateBed.fulfilled, (state, action) => {
         state.success = true;
-        const index = state.beds.findIndex((b) => b._id === action.payload._id);
-        if (index !== -1) state.beds[index] = action.payload;
+        const updatedBed = action.payload.data || action.payload;
+        const index = state.beds.findIndex((b) => b._id === updatedBed._id);
+
+        if (index !== -1) {
+          state.beds[index] = updatedBed;
+        }
       })
       .addCase(updateBed.rejected, (state, action) => {
         state.error = action.payload;

@@ -36,6 +36,8 @@ import DepartmentMaster from "./feature/master/DepartmentMaster";
 import BedMaster from "./feature/master/BedMaster";
 import AddEdtiFloor from "./feature/master/AddEdtiFloor";
 import WardMaster from "./feature/master/WardMaster";
+import LebTest from "./feature/master/LebTest";
+import ChargeMaster from "./feature/chargemaster/ChargeMaster";
 
 export function AppRoutes() {
     return (
@@ -79,9 +81,12 @@ export function AppRoutes() {
                     <Route path="/department-master" element={<DepartmentMaster />} />
                     <Route path="/bed-master" element={<BedMaster />} />
                     <Route path="/ward-master" element={<WardMaster />} />
-
+                    <Route path="/lab-test" element={<LebTest />} />
                     <Route path="/add-edit-floor" element={<AddEdtiFloor />} />
                     <Route path="/add-edit-floor/:id" element={<AddEdtiFloor />} />
+
+                    {/* Charge Master routes */}
+                    <Route path="/charge-master" element={<ChargeMaster />} />
 
                 </Route>
             </Route>
